@@ -17,7 +17,6 @@
     "hardhat-gas-reporter": "^2.3.0",
     "prettier": "^3.6.2",
     "prettier-plugin-solidity": "^1.4.3",
-    "lint:sol": "solhint 'contracts/**/*.sol'",
     "solhint": "^6.0.1",
     "solhint-plugin-prettier": "^0.1.0",
     "solidity-coverage": "^0.8.16",
