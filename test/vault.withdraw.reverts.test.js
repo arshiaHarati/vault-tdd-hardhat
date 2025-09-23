@@ -12,7 +12,9 @@ describe("Vault (TDD) — withdraw reverts", () => {
 
   it("withdraw: reverts if amount > balance (custom error)", async () => {
     const { vault, alice } = await deploy();
-    await expect(vault.connect(alice).withdraw(1n))
-      .to.be.revertedWithCustomError(vault, "InsufficientBalance");
+    await expect(vault.connect(alice).withdraw(1n)).to.be.revertedWithCustomError(
+      vault,
+      "InsufficientBalance",
+    );
   });
 });
