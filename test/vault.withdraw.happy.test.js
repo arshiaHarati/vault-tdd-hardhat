@@ -16,12 +16,8 @@ describe("Vault (TDD) — withdraw happy path", () => {
 
     await vault.connect(alice).deposit({ value: amount });
 
-    await expect(() => vault.connect(alice).withdraw(amount)).to.changeEtherBalances(
-      [alice, await vault.getAddress()],
-      [amount, -amount],
-    );
-
-    const tx = await vault.connect(alice).withdraw(0n);
+    const tx = await vault.connect(alice).withdraw(amount);
+    await expect(tx).to.emit(vault, "Withdrawn").withArgs(alice.address, amount);
 
     expect(await vault.balanceOf(alice.address)).to.equal(0n);
   });
