@@ -12,16 +12,8 @@ contract Vault {
     event Deposited(address indexed user, uint amount);
     event Withdrawn(address indexed user, uint amount);
 
-    receive() external payable{
-        revert DirectDepositNotAllowed();
-    }
-    fallback() external payable{
-        revert DirectDepositNotAllowed();
-    }
-
     function deposit() public payable {
-        // if (msg.value == 0) revert ZeroValue();
-        require(msg.value > 0, "Zero value");
+        if (msg.value == 0) revert ZeroValue();
         balances[msg.sender] += msg.value;
         emit Deposited(msg.sender, msg.value);
     }
@@ -38,5 +30,12 @@ contract Vault {
         (bool ok, ) = msg.sender.call{value: amount}("");
         if (!ok) revert WithdrawFailed();
         emit Withdrawn(msg.sender, amount);
+    }
+
+    receive() external payable{
+        revert DirectDepositNotAllowed();
+    }
+    fallback() external payable{
+        revert DirectDepositNotAllowed();
     }
 }
