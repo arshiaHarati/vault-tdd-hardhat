@@ -3,6 +3,8 @@ pragma solidity ^0.8.28;
 error InsufficientBalance();
 error WithdrawFailed();
 error ZeroValue();
+error DirectDepositNotAllowed();
+
 
 contract Vault {
     mapping(address => uint256) private balances;
@@ -10,8 +12,16 @@ contract Vault {
     event Deposited(address indexed user, uint amount);
     event Withdrawn(address indexed user, uint amount);
 
+    receive() external payable{
+        revert DirectDepositNotAllowed();
+    }
+    fallback() external payable{
+        revert DirectDepositNotAllowed();
+    }
+
     function deposit() public payable {
-        if (msg.value == 0) revert ZeroValue();
+        // if (msg.value == 0) revert ZeroValue();
+        require(msg.value > 0, "Zero value");
         balances[msg.sender] += msg.value;
         emit Deposited(msg.sender, msg.value);
     }
