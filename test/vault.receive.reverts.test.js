@@ -4,7 +4,7 @@ const { ethers } = require("hardhat");
 describe("Vault (TDD) — direct ETH to contract reverts", () => {
   async function deploy() {
     const [_, alice] = await ethers.getSigners();
-    const Vault = await ethers.getContractFactory("Vault");
+    const Vault = await ethers.getContractFactory("contracts/Vault.sol:Vault");
     const vault = await Vault.deploy();
     await vault.waitForDeployment();
     return { vault, alice };

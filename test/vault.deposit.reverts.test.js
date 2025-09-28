@@ -10,11 +10,11 @@ describe("Vault (TDD) — deposit reverts", () => {
     return { vault, owner, alice };
   }
 
-  it("deposit(0): reverts with ZeroValue()", async () => {
+  it("deposit(0): reverts with ZeroAmount()", async () => {
     const { vault, alice } = await deploy();
 
     await expect(
       vault.connect(alice).deposit({ value: 0n })
-    ).to.be.revertedWithCustomError(vault, "ZeroValue");
+    ).to.be.revertedWithCustomError(vault, "ZeroAmount");
   });
 });

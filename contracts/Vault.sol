@@ -1,19 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
+
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 error InsufficientBalance();
 error WithdrawFailed();
 error ZeroValue();
+error ZeroAmount();
 error DirectDepositNotAllowed();
 
 
-contract Vault {
+contract Vault is ReentrancyGuard {
+
     mapping(address => uint256) private balances;
 
-    event Deposited(address indexed user, uint amount);
-    event Withdrawn(address indexed user, uint amount);
+    event Deposited(address indexed user, uint256 amount);
+    event Withdrawn(address indexed user, uint256 amount);
 
-    function deposit() public payable {
-        if (msg.value == 0) revert ZeroValue();
+    modifier nonZero(uint256 amount) {
+        if (amount == 0) revert ZeroAmount();
+        _;
+    }
+
+    function deposit() public payable nonZero(msg.value) {
         balances[msg.sender] += msg.value;
         emit Deposited(msg.sender, msg.value);
     }
@@ -22,7 +31,7 @@ contract Vault {
         return balances[user];
     }
 
-    function withdraw(uint256 amount) external {
+    function withdraw(uint256 amount) external nonReentrant nonZero(amount) {
         uint256 bal = balances[msg.sender];
         if (amount > bal) revert InsufficientBalance();
         balances[msg.sender] = bal - amount;
@@ -32,10 +41,11 @@ contract Vault {
         emit Withdrawn(msg.sender, amount);
     }
 
-    receive() external payable{
+    receive() external payable {
         revert DirectDepositNotAllowed();
     }
-    fallback() external payable{
+    
+    fallback() external payable {
         revert DirectDepositNotAllowed();
     }
 }
